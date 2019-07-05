@@ -1,0 +1,95 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+
+    <title>列表增删改查</title>
+    <!-- <link href="bootstrap/css/bootstrap.css" rel="stylesheet" /> -->
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+        table thead tr th {
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+    <div style="padding:20px;" id="app">
+        <div class="panel panel-primary">
+            <div class="panel-heading">用户管理</div>
+            <table class="table table-bordered table-striped text-center">
+                <thead>
+                    <tr>
+                        <template v-for= "headitem in head">
+                            <th>{{headitem}}</th>
+                        </template>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="row in rows ">
+                        <tr>
+                        	<td>{{row.Name}}</td>
+                        	<td>{{row.Age}}</td>
+                        	
+                        	<td>{{row.Remark}}</td>
+                        	<td><a href="#" v-on:click="Edit(row)">编辑</a>&nbsp;&nbsp;<a href="#" v-on:click="Delete(row.Id)">删除</a>
+                        	</td>
+                        </tr>
+                    </template>
+                    <tr>
+                        <td><input type="text" class="form-control" v-model="rowtemplate.Name" /></td>
+                        <td><input type="text" class="form-control" v-model="rowtemplate.Age" /></td>
+                        <td><button type="button" class="btn btn-primary" v-on:click="Save">保存</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript">
+        //Model
+        var data = {
+            head:["用户名","年龄","操作"],
+            rows: [
+            { Id: 1, Name: '小明', Age: 18, },
+            ],
+            rowtemplate: { Id: 0, Name: '', Age: '', Remark: '' }
+        };
+    //ViewModel
+    var vue = new Vue({
+        el: '#app',
+        data: data,
+        methods: {
+            Save: function (event) {
+                if (this.rowtemplate.Id == 0) {
+                    //设置当前新增行的Id
+                    this.rowtemplate.Id = this.rows.length + 1;
+                    if (this.rowtemplate.Name === '') 
+                    {
+                        alert("Name can not empty!");
+                    }
+                    else
+                    {
+                        this.rows.push(this.rowtemplate);
+                    }
+                }
+                
+                //还原模板
+                this.rowtemplate = { Id: 0, Name: '', Age: '', Remark: '' }
+            },
+            Delete: function (id) {
+                //实际项目中参数操作肯定会涉及到id去后台删除，这里只是展示，先这么处理。
+                for (var i=0;i<this.rows.length;i++){
+                    if (this.rows[i].Id == id) {
+                        this.rows.splice(i, 1);//从下标i开始删除1个元素：删除下标为i的元素
+                        break;
+                    }
+                }
+            },
+            Edit: function (row) {
+                this.rowtemplate = row;
+            }
+        }
+    });
+    </script>
+</body>
+</html>
